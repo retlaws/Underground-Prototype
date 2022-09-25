@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,32 +21,46 @@ public class PlayerController : MonoBehaviour
     Vector2 lookVector;
     Vector2 rawMovementInput;
     public Vector3 movementVector = new Vector3(0, 0, 0);
+    float distToGround; 
 
     PlayerInput playerInput;
-    PlayerDig playerDig; 
+    PlayerDig playerDig;
+    Rigidbody rb;
 
     InputAction move;
     InputAction look;
     InputAction fire;
     InputAction fireHold;
+    InputAction jump;
+    InputAction interact; 
 
-    Rigidbody rb;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         playerDig = GetComponent<PlayerDig>();
+        rb = GetComponent<Rigidbody>();
 
+        GetInputActions();
+    }
+
+    private void GetInputActions()
+    {
         move = playerInput.actions["Move"];
         look = playerInput.actions["Look"];
         fire = playerInput.actions["Fire"];
         fireHold = playerInput.actions["FireHold"];
+        jump = playerInput.actions["Jump"];
+        interact = playerInput.actions["Interact"];
+    }
 
+    private void OnEnable()
+    {
         fire.started += playerDig.OnFire;
         fireHold.started += playerDig.OnFireHoldStart;
         fireHold.performed += playerDig.OnFireHoldPerformed;
-
-        rb = GetComponent<Rigidbody>();
+        jump.performed += Jump;
+        interact.performed += Interact;
     }
 
     private void OnDisable()
@@ -53,6 +68,7 @@ public class PlayerController : MonoBehaviour
         fire.started -= playerDig.OnFire;
         fireHold.started -= playerDig.OnFireHoldStart;
         fireHold.performed -= playerDig.OnFireHoldPerformed;
+        jump.performed -= Jump;
     }
 
 
@@ -60,6 +76,7 @@ public class PlayerController : MonoBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Confined;
+        distToGround = GetComponent<Collider>().bounds.extents.y;
     }
 
     private void Update()
@@ -70,14 +87,21 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        IsGrounded();
         UpdateDeceleration(); // could optimise this as don't need to run this if accelerating and vice versa
         UpdateAcceleration();
         rb.velocity = transform.TransformDirection(movementVector);
     }
 
+    private void IsGrounded()
+    {
+        isGrounded =  Physics.SphereCast(transform.position, 0.5f, -Vector3.up, out RaycastHit hit, distToGround - 0.4f);
+    }
+
     private void UpdateDeceleration()
     {
         float jumpDecelerationMultiplier = jumpDecelerationAmount;
+
         if (isGrounded)
         {
             jumpDecelerationMultiplier = 1f;
@@ -85,6 +109,7 @@ public class PlayerController : MonoBehaviour
 
 
         movementVector.y = rb.velocity.y;
+
         if (!isGrounded || rawMovementInput.x == 0 && movementVector.x > 0)
         {
             movementVector.x = Mathf.Clamp(movementVector.x - (deceleration * Time.deltaTime * jumpDecelerationMultiplier), 0, maxSpeed);
@@ -146,6 +171,35 @@ public class PlayerController : MonoBehaviour
 
         //this dictates the x axis of the player "head"
         followTransform.transform.localEulerAngles = new Vector3(angles.x, 0, 0);
+    }
+
+    private void Jump(InputAction.CallbackContext context)
+    {
+        if (!isGrounded) { return; }    
+        rb.AddForce(jumpForce * transform.up, ForceMode.Impulse);
+    }
+
+    private void Interact(InputAction.CallbackContext context)
+    {
+        if(currentObject != null)
+        {
+            currentObject.interact();
+        }
+    }
+
+    Iinteractable currentObject = null; 
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.transform.GetComponent<Iinteractable>() != null)
+        {
+            currentObject = other.transform.GetComponent<Iinteractable>();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        currentObject = null;
     }
 
 }

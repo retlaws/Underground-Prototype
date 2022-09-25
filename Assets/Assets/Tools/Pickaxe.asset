@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
   radius: 1.5
-  opacity: 0.488
-  depth: 0.397
+  opacity: 0.538
+  depth: 0.142
   diggingSpeed: 1
+  range: 5
   brushType: 0

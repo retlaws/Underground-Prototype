@@ -23,10 +23,15 @@ public class PlayerDig : MonoBehaviour
         diggerMasterRuntime = FindObjectOfType<DiggerMasterRuntime>();
     }
 
+    private void Update()
+    {
+        Vector3 endPoint = new Vector3(Camera.main.transform.position.x - currentTool.range, Camera.main.transform.position.y, Camera.main.transform.position.z );
+        Debug.DrawLine(Camera.main.transform.position, endPoint, Color.blue, Time.deltaTime);
+    }
+
     public void OnFire(InputAction.CallbackContext context) // called when left mouse button is clicked. 
     {
-        print("on fire performed");
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out var hit, 2000f))
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out var hit, currentTool.range))
         {
             if (debugDigging == true)
             {
@@ -38,6 +43,11 @@ public class PlayerDig : MonoBehaviour
             }
             UpdateNavmesh();
         }
+    }
+
+    public void SetTool(DiggingTool newTool)
+    {
+        currentTool = newTool;
     }
 
     public void OnFireHoldStart(InputAction.CallbackContext context)
@@ -61,7 +71,7 @@ public class PlayerDig : MonoBehaviour
             if (num > 10) // this is an arbitrary number
             {
                 num = 0;
-                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out var hit, 2000f))
+                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out var hit, currentTool.range))
                 {
                     diggerMasterRuntime.Modify(hit.point, currentTool.brushType, ActionType.Dig, 2, currentTool.opacity, currentTool.radius); // TODO can insert a texture reference here which will be useful
                 }

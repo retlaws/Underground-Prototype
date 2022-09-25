@@ -16,4 +16,5 @@ MonoBehaviour:
   opacity: 0.513
   depth: 0.32
   diggingSpeed: 10
+  range: 4.13
   brushType: 0
