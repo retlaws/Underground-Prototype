@@ -16,5 +16,7 @@ MonoBehaviour:
   opacity: 0.538
   depth: 0.142
   diggingSpeed: 1
-  range: 5
+  range: 2.47
   brushType: 0
+  animationName: Pickaxe
+  toolPrefab: {fileID: 4475452453540590640, guid: 3d498ecc50e1aff448556585b28a1794, type: 3}

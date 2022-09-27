@@ -6,14 +6,13 @@ using System.Collections;
 
 public class PlayerDig : MonoBehaviour
 {
-    [SerializeField] DiggingTool currentTool;
-    [SerializeField] bool debugDigging = false;
-    [SerializeField] bool debugAllowContinuousDigging = false;
+    [SerializeField] Tool currentTool;
 
     DiggerNavMeshRuntime navMeshRuntime;
     DiggerMasterRuntime diggerMasterRuntime;
 
     int navmeshUpdateCounter = 0;
+    Animator animator;
 
     private void Start()
     {
@@ -21,31 +20,22 @@ public class PlayerDig : MonoBehaviour
         navMeshRuntime.CollectNavMeshSources();
         navMeshRuntime.UpdateNavMeshAsync(); // this is to reset the navmesh
         diggerMasterRuntime = FindObjectOfType<DiggerMasterRuntime>();
+        animator = GetComponent<Animator>();
     }
 
-    private void Update()
-    {
-        Vector3 endPoint = new Vector3(Camera.main.transform.position.x - currentTool.range, Camera.main.transform.position.y, Camera.main.transform.position.z );
-        Debug.DrawLine(Camera.main.transform.position, endPoint, Color.blue, Time.deltaTime);
-    }
+    //private void Update()
+    //{
+    //    Vector3 endPoint = new Vector3(Camera.main.transform.position.x - currentTool.toolConfig.range, Camera.main.transform.position.y, Camera.main.transform.position.z );
+    //    Debug.DrawLine(Camera.main.transform.position, endPoint, Color.blue, Time.deltaTime);
+    //}
 
     public void OnFire(InputAction.CallbackContext context) // called when left mouse button is clicked. 
     {
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out var hit, currentTool.range))
-        {
-            if (debugDigging == true)
-            {
-                diggerMasterRuntime.Modify(hit.point, BrushType.Sphere, ActionType.Dig, 2, 0.5f, 4);
-            }
-            else
-            {
-                diggerMasterRuntime.Modify(hit.point, currentTool.brushType, ActionType.Dig, 2, currentTool.opacity, currentTool.radius); // TODO can insert a texture reference here which will be useful
-            }
-            UpdateNavmesh();
-        }
+        Dig();
+        UpdateNavmesh();
     }
 
-    public void SetTool(DiggingTool newTool)
+    public void SetTool(Tool newTool)
     {
         currentTool = newTool;
     }
@@ -66,20 +56,30 @@ public class PlayerDig : MonoBehaviour
 
         while (true)
         {
-            num += currentTool.diggingSpeed * 10 * Time.deltaTime;
+            num += currentTool.toolConfig.diggingSpeed * 10 * Time.deltaTime;
 
             if (num > 10) // this is an arbitrary number
             {
                 num = 0;
-                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out var hit, currentTool.range))
-                {
-                    diggerMasterRuntime.Modify(hit.point, currentTool.brushType, ActionType.Dig, 2, currentTool.opacity, currentTool.radius); // TODO can insert a texture reference here which will be useful
-                }
+                Dig();
+
             }
             yield return new WaitForEndOfFrame();
         }
     }
 
+
+    private void Dig()
+    {
+        if(Physics.Raycast(currentTool.startOfDiggingRaycast.position, currentTool.startOfDiggingRaycast.forward, out var hit, currentTool.toolConfig.range))
+        {
+            diggerMasterRuntime.Modify(hit.point, currentTool.toolConfig.brushType, ActionType.Dig, 2, currentTool.toolConfig.opacity, currentTool.toolConfig.radius); // TODO can insert a texture reference here which will be useful
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Pickaxe"))
+            {
+                animator.Play("Pickaxe");
+            }
+        }
+    }
 
     private void UpdateNavmesh()
     {

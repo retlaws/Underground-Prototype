@@ -16,5 +16,7 @@ MonoBehaviour:
   opacity: 0.513
   depth: 0.32
   diggingSpeed: 10
-  range: 4.13
+  range: 2.54
   brushType: 0
+  animationName: Drill
+  toolPrefab: {fileID: 1628854018794470153, guid: 164468062484d324580eb6d06d11d866, type: 3}

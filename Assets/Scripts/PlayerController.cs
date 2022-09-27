@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject followTransform;
     [SerializeField] float rotationPower = 3f;
     [SerializeField] int lowestHeadAngle = 25;
+    [SerializeField] int highestHeadAngle = 150;
 
     Vector2 lookVector;
     Vector2 rawMovementInput;
@@ -69,6 +70,7 @@ public class PlayerController : MonoBehaviour
         fireHold.started -= playerDig.OnFireHoldStart;
         fireHold.performed -= playerDig.OnFireHoldPerformed;
         jump.performed -= Jump;
+        interact.performed -= Interact;
     }
 
 
@@ -156,9 +158,10 @@ public class PlayerController : MonoBehaviour
         Vector3 angles = followTransform.transform.localEulerAngles;
         angles.z = 0;
         float angle = followTransform.transform.localEulerAngles.x;
-        if (angle > 180 && angle < 340)
+        
+        if (angle > 180 && angle < 320)
         {
-            angles.x = 340;
+            angles.x = 320;
         }
         else if (angle < 180 && angle > 90 - lowestHeadAngle)
         {

@@ -1,5 +1,7 @@
 using UnityEngine;
 using Digger.Modules.Core.Sources;
+using UnityEngine.UIElements;
+using System.Runtime.Remoting.Messaging;
 
 [CreateAssetMenu(fileName = "DiggingTool", menuName = "Digging Tool/Make New Digging Tool", order = 0)]
 public class DiggingTool : ScriptableObject
@@ -20,6 +22,7 @@ public class DiggingTool : ScriptableObject
     [Range(0.5f, 5)]
     public float range = 1;
 
-    public BrushType brushType; 
+    public BrushType brushType;
 
+    public string animationName; //this is super hacky! Don't do this normally!
 }
