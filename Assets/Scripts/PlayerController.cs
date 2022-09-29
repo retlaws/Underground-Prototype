@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject followTransform;
     [SerializeField] float rotationPower = 3f;
     [SerializeField] int lowestHeadAngle = 25;
-    [SerializeField] int highestHeadAngle = 150;
 
     Vector2 lookVector;
     Vector2 rawMovementInput;
@@ -28,12 +27,15 @@ public class PlayerController : MonoBehaviour
     PlayerDig playerDig;
     Rigidbody rb;
 
+    Iinteractable currentObject = null;
+
     InputAction move;
     InputAction look;
     InputAction fire;
     InputAction fireHold;
     InputAction jump;
-    InputAction interact; 
+    InputAction interact;
+    InputAction scroll; 
 
 
     private void Awake()
@@ -53,6 +55,7 @@ public class PlayerController : MonoBehaviour
         fireHold = playerInput.actions["FireHold"];
         jump = playerInput.actions["Jump"];
         interact = playerInput.actions["Interact"];
+        scroll = playerInput.actions["Scroll"];
     }
 
     private void OnEnable()
@@ -62,6 +65,7 @@ public class PlayerController : MonoBehaviour
         fireHold.performed += playerDig.OnFireHoldPerformed;
         jump.performed += Jump;
         interact.performed += Interact;
+        scroll.performed += Scroll;
     }
 
     private void OnDisable()
@@ -71,6 +75,7 @@ public class PlayerController : MonoBehaviour
         fireHold.performed -= playerDig.OnFireHoldPerformed;
         jump.performed -= Jump;
         interact.performed -= Interact;
+        scroll.performed -= Scroll;
     }
 
 
@@ -108,7 +113,6 @@ public class PlayerController : MonoBehaviour
         {
             jumpDecelerationMultiplier = 1f;
         }
-
 
         movementVector.y = rb.velocity.y;
 
@@ -182,6 +186,11 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(jumpForce * transform.up, ForceMode.Impulse);
     }
 
+    private void Scroll(InputAction.CallbackContext context)
+    {
+        GetComponent<LightController>().ScrollThroughDifferentLights(context.ReadValue<Vector2>().y);
+    }
+    
     private void Interact(InputAction.CallbackContext context)
     {
         if(currentObject != null)
@@ -190,7 +199,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    Iinteractable currentObject = null; 
+
 
     private void OnTriggerEnter(Collider other)
     {

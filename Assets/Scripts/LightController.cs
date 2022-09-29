@@ -1,37 +1,89 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class LightController : MonoBehaviour
 {
-    [SerializeField] Light equippedLight;
-    [SerializeField] float maxBrightness = 30f; 
-    [SerializeField] float amountToReducePerSecond = 1f; 
-    
-    private void Update()
+
+
+    [SerializeField] LightObject equippedLight;
+    [SerializeField] List<LightObject> lights;
+
+
+    private void Start()
     {
-        equippedLight.intensity -= amountToReducePerSecond * Time.deltaTime;
-        equippedLight.spotAngle -= (amountToReducePerSecond * Time.deltaTime) / 2;
+        EquipLight(0); // this is just starting the list at the start each time
+    }
+
+
+    private void Update() // need to improve this so it is a percentage reduction so it fades out a bit slowerwq
+    {
+        equippedLight.lightItem.intensity -= equippedLight.amountToReducePerSecond * Time.deltaTime;
+        equippedLight.lightItem.spotAngle -= (equippedLight.amountToReducePerSecond * Time.deltaTime) / 2;
     }
 
     public void PowerUpLight(float powerUpAmount)
     {
-        if(equippedLight.intensity + powerUpAmount > maxBrightness)
+        if(!equippedLight.isRechargable) { return; }
+
+        if(equippedLight.lightItem.intensity + powerUpAmount > equippedLight.maxBrightness)
         {
-            equippedLight.intensity = maxBrightness;
+            equippedLight.lightItem.intensity = equippedLight.maxBrightness;
         }
         else
         {
-            equippedLight.intensity += powerUpAmount;
+            equippedLight.lightItem.intensity += powerUpAmount;
         }
 
-        if(equippedLight.spotAngle + powerUpAmount > 75)
+        if(equippedLight.lightItem.spotAngle + powerUpAmount > 75)
         {
-            equippedLight.spotAngle = 75;
+            equippedLight.lightItem.spotAngle = 75;
         }
         else
         {
-            equippedLight.spotAngle += powerUpAmount;
+            equippedLight.lightItem.spotAngle += powerUpAmount;
         }
+    }
+
+    int currentIndex = 0;
+
+    public void ScrollThroughDifferentLights(float scrollValue)
+    {
+        int numberOfLights = lights.Count;
+
+        if(scrollValue > 0)
+        {
+            currentIndex++; 
+            if(currentIndex < numberOfLights)
+            {
+                EquipLight(currentIndex);
+            }
+            else
+            {
+                currentIndex = 0;
+                EquipLight(0);
+            }
+        }
+        else if(scrollValue < 0)
+        {
+            currentIndex--;
+            if(currentIndex >= 0)
+            {
+                EquipLight(currentIndex);
+            }
+            else
+            {
+                currentIndex = numberOfLights - 1;
+                EquipLight(currentIndex);
+            }
+        }
+    }
+
+    private void EquipLight(int lightIndex)
+    {
+        equippedLight.lightItem.enabled = false; 
+        equippedLight = lights[lightIndex];
+        equippedLight.lightItem.enabled = true; 
     }
 }
