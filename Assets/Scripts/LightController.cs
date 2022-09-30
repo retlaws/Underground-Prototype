@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,9 +14,18 @@ public class LightController : MonoBehaviour
 
     private void Start()
     {
+        TurnOffAllLights();
         EquipLight(0); // this is just starting the list at the start each time
+
     }
 
+    private void TurnOffAllLights()
+    {
+        for (int i = 0; i < lights.Count; i++)
+        {
+            lights[i].parentObject.SetActive(false);
+        }
+    }
 
     private void Update() // need to improve this so it is a percentage reduction so it fades out a bit slowerwq
     {
@@ -82,8 +92,8 @@ public class LightController : MonoBehaviour
 
     private void EquipLight(int lightIndex)
     {
-        equippedLight.lightItem.enabled = false; 
+        equippedLight.parentObject.SetActive(false); 
         equippedLight = lights[lightIndex];
-        equippedLight.lightItem.enabled = true; 
+        equippedLight.parentObject.SetActive(true);
     }
 }

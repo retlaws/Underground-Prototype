@@ -7,6 +7,7 @@ public class LightObject : MonoBehaviour
 {
     [HideInInspector]
     public Light lightItem;
+    public GameObject parentObject;
     public float maxBrightness = 20f;
     public bool isRechargable = false;
 
