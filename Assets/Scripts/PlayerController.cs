@@ -1,7 +1,9 @@
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.UI;
+using static UnityEngine.Rendering.ReloadAttribute;
 
 public class PlayerController : MonoBehaviour
 {
@@ -18,16 +20,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float rotationPower = 3f;
     [SerializeField] int lowestHeadAngle = 25;
 
+
+
     Vector2 lookVector;
     Vector2 rawMovementInput;
     public Vector3 movementVector = new Vector3(0, 0, 0);
     float distToGround; 
 
     PlayerInput playerInput;
+    PlayerInteract playerInteract;
+    ToolSwapper playerToolSwapper;
     PlayerDig playerDig;
     Rigidbody rb;
-
-    Iinteractable currentObject = null;
 
     InputAction move;
     InputAction look;
@@ -35,12 +39,15 @@ public class PlayerController : MonoBehaviour
     InputAction fireHold;
     InputAction jump;
     InputAction interact;
-    InputAction scroll; 
+    InputAction scroll;
+    InputAction changeTool;
 
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        playerInteract = GetComponent<PlayerInteract>();
+        playerToolSwapper = GetComponent<ToolSwapper>();
         playerDig = GetComponent<PlayerDig>();
         rb = GetComponent<Rigidbody>();
 
@@ -56,6 +63,7 @@ public class PlayerController : MonoBehaviour
         jump = playerInput.actions["Jump"];
         interact = playerInput.actions["Interact"];
         scroll = playerInput.actions["Scroll"];
+        changeTool = playerInput.actions["ChangeTool"];
     }
 
     private void OnEnable()
@@ -64,8 +72,9 @@ public class PlayerController : MonoBehaviour
         fireHold.started += playerDig.OnFireHoldStart;
         fireHold.performed += playerDig.OnFireHoldPerformed;
         jump.performed += Jump;
-        interact.performed += Interact;
+        interact.performed += PlayerInputInteract;
         scroll.performed += Scroll;
+        changeTool.performed += ChangeTool;
     }
 
     private void OnDisable()
@@ -74,8 +83,9 @@ public class PlayerController : MonoBehaviour
         fireHold.started -= playerDig.OnFireHoldStart;
         fireHold.performed -= playerDig.OnFireHoldPerformed;
         jump.performed -= Jump;
-        interact.performed -= Interact;
+        interact.performed -= PlayerInputInteract;
         scroll.performed -= Scroll;
+        changeTool.performed -= ChangeTool;
     }
 
 
@@ -84,20 +94,34 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Confined;
         distToGround = GetComponent<Collider>().bounds.extents.y;
+
     }
 
     private void Update()
     {
+        if(controlsLocked) { return; }
         HeadRotation();
         rawMovementInput = move.ReadValue<Vector2>();
     }
 
     private void FixedUpdate()
     {
+        if(controlsLocked) { return; }
         IsGrounded();
         UpdateDeceleration(); // could optimise this as don't need to run this if accelerating and vice versa
         UpdateAcceleration();
         rb.velocity = transform.TransformDirection(movementVector);
+    }
+
+    bool controlsLocked = false; 
+
+    public void LockControls()
+    {
+        controlsLocked = true; 
+    }
+    public void UnlockControls()
+    {
+        controlsLocked = false; 
     }
 
     private void IsGrounded()
@@ -182,36 +206,39 @@ public class PlayerController : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context)
     {
-        if (!isGrounded) { return; }    
+        if (!isGrounded || controlsLocked) { return; }    
         rb.AddForce(jumpForce * transform.up, ForceMode.Impulse);
     }
 
     private void Scroll(InputAction.CallbackContext context)
     {
+        if (controlsLocked) { return; }
         GetComponent<LightController>().ScrollThroughDifferentLights(context.ReadValue<Vector2>().y);
     }
     
-    private void Interact(InputAction.CallbackContext context)
+    private void PlayerInputInteract(InputAction.CallbackContext context)
     {
-        if(currentObject != null)
+        if (controlsLocked) { return; }
+        playerInteract.PlayerInteracted();
+    }
+
+    bool currentToolDrill = false;
+
+
+    private void ChangeTool(InputAction.CallbackContext context)
+    {
+        if (currentToolDrill)
         {
-            currentObject.interact();
+            currentToolDrill = false;
+            playerToolSwapper.SwapTool("Pickaxe");
+        }
+        else
+        {
+            currentToolDrill = true;
+            playerToolSwapper.SwapTool("Drill");
         }
     }
 
 
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.transform.GetComponent<Iinteractable>() != null)
-        {
-            currentObject = other.transform.GetComponent<Iinteractable>();
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        currentObject = null;
-    }
 
 }

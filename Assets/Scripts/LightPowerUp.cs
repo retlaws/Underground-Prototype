@@ -6,9 +6,9 @@ public class LightPowerUp : MonoBehaviour, Iinteractable
 {
     [SerializeField] float powerProvided = 15f; 
 
-    public void interact()
+    public void interact(PlayerInteract player)
     {
-        FindObjectOfType<LightController>().PowerUpLight(powerProvided); 
+        player.GetComponent<LightController>().PowerUpLight(powerProvided); 
     }
 
 }

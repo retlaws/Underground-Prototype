@@ -4,6 +4,6 @@ using UnityEngine;
 
 interface Iinteractable 
 {
-    void interact();
+    void interact(PlayerInteract player);
 }
 

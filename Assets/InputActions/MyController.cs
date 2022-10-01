@@ -98,6 +98,15 @@ public partial class @MyController : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ChangeTool"",
+                    ""type"": ""Button"",
+                    ""id"": ""92b73b57-9122-4538-8a8d-ad8217837ff5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -397,6 +406,17 @@ public partial class @MyController : IInputActionCollection2, IDisposable
                     ""action"": ""Scroll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9b4b0662-da5d-43b8-8fb9-9bb401e89122"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ChangeTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -474,6 +494,7 @@ public partial class @MyController : IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Scroll = m_Player.FindAction("Scroll", throwIfNotFound: true);
+        m_Player_ChangeTool = m_Player.FindAction("ChangeTool", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -541,6 +562,7 @@ public partial class @MyController : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Scroll;
+    private readonly InputAction m_Player_ChangeTool;
     public struct PlayerActions
     {
         private @MyController m_Wrapper;
@@ -553,6 +575,7 @@ public partial class @MyController : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Scroll => m_Wrapper.m_Player_Scroll;
+        public InputAction @ChangeTool => m_Wrapper.m_Player_ChangeTool;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -586,6 +609,9 @@ public partial class @MyController : IInputActionCollection2, IDisposable
                 @Scroll.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnScroll;
                 @Scroll.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnScroll;
                 @Scroll.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnScroll;
+                @ChangeTool.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnChangeTool;
+                @ChangeTool.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnChangeTool;
+                @ChangeTool.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnChangeTool;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -614,6 +640,9 @@ public partial class @MyController : IInputActionCollection2, IDisposable
                 @Scroll.started += instance.OnScroll;
                 @Scroll.performed += instance.OnScroll;
                 @Scroll.canceled += instance.OnScroll;
+                @ChangeTool.started += instance.OnChangeTool;
+                @ChangeTool.performed += instance.OnChangeTool;
+                @ChangeTool.canceled += instance.OnChangeTool;
             }
         }
     }
@@ -673,5 +702,6 @@ public partial class @MyController : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnScroll(InputAction.CallbackContext context);
+        void OnChangeTool(InputAction.CallbackContext context);
     }
 }
