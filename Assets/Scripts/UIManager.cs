@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI throwableLights;
     [SerializeField] GameObject ControlText; 
+    [SerializeField] Slider lightMetre; 
 
     public static UIManager Instance { get; private set; }
 
@@ -42,5 +43,10 @@ public class UIManager : MonoBehaviour
             controlsVisible = true;
             ControlText.SetActive(true);
         }
+    }
+
+    public void UpdateLightMeter(float currentBrightness, float maxBrightness)
+    {
+        lightMetre.value = currentBrightness / maxBrightness;
     }
 }

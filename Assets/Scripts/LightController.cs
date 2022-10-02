@@ -30,33 +30,11 @@ public class LightController : MonoBehaviour
         }
     }
 
-    private void Update() // need to improve this so it is a percentage reduction so it fades out a bit slowerwq
-    {
-        equippedLight.lightItem.intensity -= equippedLight.amountToReducePerSecond * Time.deltaTime;
-        equippedLight.lightItem.spotAngle -= (equippedLight.amountToReducePerSecond * Time.deltaTime) / 2;
-    }
-
     public void PowerUpLight(float powerUpAmount)
     {
         if(!equippedLight.isRechargable) { return; }
-
-        if(equippedLight.lightItem.intensity + powerUpAmount > equippedLight.maxBrightness)
-        {
-            equippedLight.lightItem.intensity = equippedLight.maxBrightness;
-        }
-        else
-        {
-            equippedLight.lightItem.intensity += powerUpAmount;
-        }
-
-        if(equippedLight.lightItem.spotAngle + powerUpAmount > 75)
-        {
-            equippedLight.lightItem.spotAngle = 75;
-        }
-        else
-        {
-            equippedLight.lightItem.spotAngle += powerUpAmount;
-        }
+        equippedLight.PowerUpLight(powerUpAmount);
+        
     }
 
     int currentIndex = 0;

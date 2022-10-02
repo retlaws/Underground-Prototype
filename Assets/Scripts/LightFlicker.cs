@@ -28,6 +28,7 @@ public class LightFlicker : MonoBehaviour
     Queue<float> smoothQueue;
     float lastSum = 0;
 
+    LightObject lightObject; 
 
     /// <summary>
     /// Reset the randomness and start again. You usually don't need to call
@@ -42,6 +43,7 @@ public class LightFlicker : MonoBehaviour
 
     void Start()
     {
+        lightObject = GetComponent<LightObject>();
         smoothQueue = new Queue<float>(smoothing);
         // External or internal light?
         if (light == null)
@@ -50,8 +52,15 @@ public class LightFlicker : MonoBehaviour
         }
     }
 
+    public void UpdateMaxIntesity()
+    {
+
+    }
+    
+
     void Update()
     {
+        maxIntensity = lightObject.GetMaxIntensityForLightFlicker();
         if (light == null)
             return;
 
