@@ -9,7 +9,7 @@ public class LightController : MonoBehaviour
 {
 
 
-    [SerializeField] LightObject equippedLight;
+    public LightObject equippedLight;
     [SerializeField] List<LightObject> lights;
     [SerializeField] Transform instantiationPoint;
     [SerializeField] Transform headTransform;

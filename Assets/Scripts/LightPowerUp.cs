@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class LightPowerUp : MonoBehaviour, Iinteractable
 {
-    [SerializeField] float powerProvided = 15f; 
+    [SerializeField] float powerProvided = 15f;
+    [SerializeField] LightType typeOfLightPowered; 
 
     public void interact(PlayerInteract player)
     {
-        player.GetComponent<LightController>().PowerUpLight(powerProvided); 
+        LightController lightController = player.GetComponent<LightController>();
+
+        if (lightController.equippedLight.lightType == typeOfLightPowered)
+        {
+            lightController.PowerUpLight(powerProvided);
+        }
     }
 
 }

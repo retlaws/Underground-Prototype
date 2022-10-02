@@ -19,9 +19,9 @@ public class Fader : MonoBehaviour
         image.enabled = true;
         while(alpha < 0.9f)
         {
-            alpha += 0.0015f; 
+            alpha += Time.deltaTime; 
             image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(Time.deltaTime);
         }
         yield return null;
     }
@@ -31,9 +31,9 @@ public class Fader : MonoBehaviour
         float alpha = 1;
         while (alpha > 0)
         {
-            alpha -= 0.0015f;
+            alpha -= Time.deltaTime;
             image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(Time.deltaTime);
         }
         image.enabled = false; 
         yield return null;

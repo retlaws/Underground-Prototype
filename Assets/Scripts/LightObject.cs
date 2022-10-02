@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class LightObject : MonoBehaviour
 {
+    public LightType lightType; 
     public Light lightItem;
     public GameObject parentObject;
     public float maxBrightness = 20f;
     public bool isRechargable = false;
     public bool isThrowable = false;
     public GameObject ThrowableLightPrefab;
+    
+
+
     float flickerLightMaxIntensity;
     [SerializeField] bool flickeringLight = false; 
 
