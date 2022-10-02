@@ -40,7 +40,8 @@ public class PlayerController : MonoBehaviour
     InputAction interact;
     InputAction scroll;
     InputAction changeTool;
-    InputAction rightFire; 
+    InputAction rightFire;
+    InputAction hideControls; 
 
 
     private void Awake()
@@ -66,6 +67,7 @@ public class PlayerController : MonoBehaviour
         scroll = playerInput.actions["Scroll"];
         changeTool = playerInput.actions["ChangeTool"];
         rightFire = playerInput.actions["RightFire"];
+        hideControls = playerInput.actions["HideControls"];
     }
 
     private void OnEnable()
@@ -78,6 +80,7 @@ public class PlayerController : MonoBehaviour
         scroll.performed += Scroll;
         changeTool.performed += ChangeTool;
         rightFire.performed += ThrowLight;
+        hideControls.performed += HideControls;
     }
 
     private void OnDisable()
@@ -90,6 +93,7 @@ public class PlayerController : MonoBehaviour
         scroll.performed -= Scroll;
         changeTool.performed -= ChangeTool;
         rightFire.performed -= ThrowLight;
+        hideControls.performed -= HideControls;
     }
 
 
@@ -226,26 +230,20 @@ public class PlayerController : MonoBehaviour
         playerInteract.PlayerInteracted();
     }
 
-    bool currentToolDrill = false;
-
 
     private void ChangeTool(InputAction.CallbackContext context)
     {
-        if (currentToolDrill)
-        {
-            currentToolDrill = false;
-            playerToolSwapper.SwapTool("Pickaxe");
-        }
-        else
-        {
-            currentToolDrill = true;
-            playerToolSwapper.SwapTool("Drill");
-        }
+        playerToolSwapper.SwapTool();
     }
 
     private void ThrowLight(InputAction.CallbackContext context)
     {
         lightController.ThrowLight();
+    }
+
+    private void HideControls(InputAction.CallbackContext context)
+    {
+        UIManager.Instance.HideOrUnHideControls();   
     }
 
 

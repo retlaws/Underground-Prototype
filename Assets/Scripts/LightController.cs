@@ -12,14 +12,14 @@ public class LightController : MonoBehaviour
     [SerializeField] LightObject equippedLight;
     [SerializeField] List<LightObject> lights;
     [SerializeField] Transform instantiationPoint;
-    [SerializeField] Transform headTransform; 
-
+    [SerializeField] Transform headTransform;
+    [SerializeField] int numberOfThrowableLights = 10; 
 
     private void Start()
     {
         TurnOffAllLights();
         EquipLight(0); // this is just starting the list at the start each time
-
+        UIManager.Instance.updateThrowableLightUI(numberOfThrowableLights);
     }
 
     private void TurnOffAllLights()
@@ -97,12 +97,22 @@ public class LightController : MonoBehaviour
     {
         equippedLight.parentObject.SetActive(false); 
         equippedLight = lights[lightIndex];
-        equippedLight.parentObject.SetActive(true);
+        equippedLight.parentObject.SetActive(true); 
     }
 
     public void ThrowLight() // this is some really horrible code - lol! 
     {
+        if(numberOfThrowableLights == 0) { return; }
+        numberOfThrowableLights--;
+
         GameObject stickyLight = Instantiate(equippedLight.ThrowableLightPrefab, instantiationPoint.position, headTransform.rotation);
         stickyLight.GetComponent<StickyLight>().Init();
+        UIManager.Instance.updateThrowableLightUI(numberOfThrowableLights);
+    }
+
+    public void PickupThrowableLight()
+    {
+        numberOfThrowableLights++;
+        UIManager.Instance.updateThrowableLightUI(numberOfThrowableLights);
     }
 }

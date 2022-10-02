@@ -23,11 +23,6 @@ public class PlayerDig : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    //private void Update()
-    //{
-    //    Vector3 endPoint = new Vector3(Camera.main.transform.position.x - currentTool.toolConfig.range, Camera.main.transform.position.y, Camera.main.transform.position.z );
-    //    Debug.DrawLine(Camera.main.transform.position, endPoint, Color.blue, Time.deltaTime);
-    //}
 
     public void OnFire(InputAction.CallbackContext context) // called when left mouse button is clicked. 
     {
@@ -73,7 +68,7 @@ public class PlayerDig : MonoBehaviour
     {
         if(Physics.Raycast(currentTool.startOfDiggingRaycast.position, currentTool.startOfDiggingRaycast.forward, out var hit, currentTool.toolConfig.range))
         {
-            diggerMasterRuntime.Modify(hit.point, currentTool.toolConfig.brushType, ActionType.Dig, 2, currentTool.toolConfig.opacity, currentTool.toolConfig.radius); // TODO can insert a texture reference here which will be useful
+            diggerMasterRuntime.Modify(hit.point, currentTool.toolConfig.brushType, currentTool.toolConfig.actionType, 2, currentTool.toolConfig.opacity, currentTool.toolConfig.radius); // TODO can insert a texture reference here which will be useful
             if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Pickaxe"))
             {
                 animator.Play("Pickaxe");

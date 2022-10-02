@@ -28,7 +28,6 @@ public class Fader : MonoBehaviour
 
     public IEnumerator FadeUp()
     {
-        print("Fade Up Called");
         float alpha = 1;
         while (alpha > 0)
         {

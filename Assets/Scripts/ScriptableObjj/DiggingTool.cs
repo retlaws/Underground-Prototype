@@ -24,5 +24,7 @@ public class DiggingTool : ScriptableObject
 
     public BrushType brushType;
 
+    public ActionType actionType;
+
     public string animationName; //this is super hacky! Don't do this normally!
 }

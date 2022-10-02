@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
@@ -6,29 +7,47 @@ using static UnityEngine.Rendering.ReloadAttribute;
 
 public class ToolSwapper : MonoBehaviour
 {
-    [SerializeField] GameObject Drill;
-    [SerializeField] GameObject Pickaxe;
+    [SerializeField] List<GameObject> toolList;
+
+    GameObject equippedTool; 
 
     PlayerDig playerDig;
 
     private void Start()
     {
         playerDig = GetComponent<PlayerDig>();
+        UnEquipAllTools();
+        equippedTool = toolList[0]; 
+        EquipTool();
     }
 
-    public void SwapTool(string toolName) // using a string name, god that is hacky!!! :-) 
+    private void UnEquipAllTools()
     {
-        if(toolName == "Drill")
+        for (int i = 0; i < toolList.Count; i++)
         {
-            Drill.SetActive(true);
-            playerDig.SetTool(Drill.GetComponent<Tool>());
-            Pickaxe.SetActive(false);
-        }
-        else if(toolName == "Pickaxe")
-        {
-            Drill.SetActive(false);
-            playerDig.SetTool(Pickaxe.GetComponent<Tool>());
-            Pickaxe.SetActive(true);
+            toolList[i].SetActive(false);
         }
     }
+
+    int currentIndex = 0;
+
+    public void SwapTool() // using a string name, god that is hacky!!! :-) 
+    {
+        currentIndex++;
+        if(currentIndex >= toolList.Count)
+        {
+            currentIndex = 0;
+        }
+        EquipTool();
+    }
+
+    private void EquipTool()
+    {
+        equippedTool.SetActive(false);  
+        equippedTool = toolList[currentIndex];
+        equippedTool.SetActive(true);
+        playerDig.SetTool(equippedTool.GetComponent<Tool>());
+    }
+
+
 }

@@ -22,6 +22,11 @@ public class PlayerInteract : MonoBehaviour
         }
     }
 
+    public void MakeCurrentObjectNull()
+    {
+        currentObject = null;
+    }
+
 
     private void OnTriggerEnter(Collider other)
     {
