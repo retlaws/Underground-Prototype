@@ -85,6 +85,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "RightFire",
+                    "type": "Button",
+                    "id": "fa0da5ad-aaed-478d-947a-cb74a52bf563",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -393,6 +402,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "ChangeTool",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "10f80331-61e0-40d9-aceb-36aa3f42f448",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "RightFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

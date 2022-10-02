@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 public class LightController : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class LightController : MonoBehaviour
 
     [SerializeField] LightObject equippedLight;
     [SerializeField] List<LightObject> lights;
+    [SerializeField] Transform instantiationPoint;
+    [SerializeField] Transform headTransform; 
 
 
     private void Start()
@@ -95,5 +98,11 @@ public class LightController : MonoBehaviour
         equippedLight.parentObject.SetActive(false); 
         equippedLight = lights[lightIndex];
         equippedLight.parentObject.SetActive(true);
+    }
+
+    public void ThrowLight() // this is some really horrible code - lol! 
+    {
+        GameObject stickyLight = Instantiate(equippedLight.ThrowableLightPrefab, instantiationPoint.position, headTransform.rotation);
+        stickyLight.GetComponent<StickyLight>().Init();
     }
 }

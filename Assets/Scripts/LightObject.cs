@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class LightObject : MonoBehaviour
 {
-    [HideInInspector]
     public Light lightItem;
     public GameObject parentObject;
     public float maxBrightness = 20f;
     public bool isRechargable = false;
+    public bool isThrowable = false;
+    public GameObject ThrowableLightPrefab; 
 
     [Range(0f, 5f)]
     public float amountToReducePerSecond = 1f;

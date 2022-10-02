@@ -107,6 +107,15 @@ public partial class @MyController : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightFire"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa0da5ad-aaed-478d-947a-cb74a52bf563"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -417,6 +426,17 @@ public partial class @MyController : IInputActionCollection2, IDisposable
                     ""action"": ""ChangeTool"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""10f80331-61e0-40d9-aceb-36aa3f42f448"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""RightFire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -495,6 +515,7 @@ public partial class @MyController : IInputActionCollection2, IDisposable
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Scroll = m_Player.FindAction("Scroll", throwIfNotFound: true);
         m_Player_ChangeTool = m_Player.FindAction("ChangeTool", throwIfNotFound: true);
+        m_Player_RightFire = m_Player.FindAction("RightFire", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -563,6 +584,7 @@ public partial class @MyController : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Scroll;
     private readonly InputAction m_Player_ChangeTool;
+    private readonly InputAction m_Player_RightFire;
     public struct PlayerActions
     {
         private @MyController m_Wrapper;
@@ -576,6 +598,7 @@ public partial class @MyController : IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Scroll => m_Wrapper.m_Player_Scroll;
         public InputAction @ChangeTool => m_Wrapper.m_Player_ChangeTool;
+        public InputAction @RightFire => m_Wrapper.m_Player_RightFire;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -612,6 +635,9 @@ public partial class @MyController : IInputActionCollection2, IDisposable
                 @ChangeTool.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnChangeTool;
                 @ChangeTool.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnChangeTool;
                 @ChangeTool.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnChangeTool;
+                @RightFire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightFire;
+                @RightFire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightFire;
+                @RightFire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightFire;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -643,6 +669,9 @@ public partial class @MyController : IInputActionCollection2, IDisposable
                 @ChangeTool.started += instance.OnChangeTool;
                 @ChangeTool.performed += instance.OnChangeTool;
                 @ChangeTool.canceled += instance.OnChangeTool;
+                @RightFire.started += instance.OnRightFire;
+                @RightFire.performed += instance.OnRightFire;
+                @RightFire.canceled += instance.OnRightFire;
             }
         }
     }
@@ -703,5 +732,6 @@ public partial class @MyController : IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnScroll(InputAction.CallbackContext context);
         void OnChangeTool(InputAction.CallbackContext context);
+        void OnRightFire(InputAction.CallbackContext context);
     }
 }

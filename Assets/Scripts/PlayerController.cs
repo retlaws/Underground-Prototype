@@ -20,8 +20,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float rotationPower = 3f;
     [SerializeField] int lowestHeadAngle = 25;
 
-
-
     Vector2 lookVector;
     Vector2 rawMovementInput;
     public Vector3 movementVector = new Vector3(0, 0, 0);
@@ -30,6 +28,7 @@ public class PlayerController : MonoBehaviour
     PlayerInput playerInput;
     PlayerInteract playerInteract;
     ToolSwapper playerToolSwapper;
+    LightController lightController;
     PlayerDig playerDig;
     Rigidbody rb;
 
@@ -41,6 +40,7 @@ public class PlayerController : MonoBehaviour
     InputAction interact;
     InputAction scroll;
     InputAction changeTool;
+    InputAction rightFire; 
 
 
     private void Awake()
@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         playerInteract = GetComponent<PlayerInteract>();
         playerToolSwapper = GetComponent<ToolSwapper>();
+        lightController = GetComponent<LightController>();
         playerDig = GetComponent<PlayerDig>();
         rb = GetComponent<Rigidbody>();
 
@@ -64,6 +65,7 @@ public class PlayerController : MonoBehaviour
         interact = playerInput.actions["Interact"];
         scroll = playerInput.actions["Scroll"];
         changeTool = playerInput.actions["ChangeTool"];
+        rightFire = playerInput.actions["RightFire"];
     }
 
     private void OnEnable()
@@ -75,6 +77,7 @@ public class PlayerController : MonoBehaviour
         interact.performed += PlayerInputInteract;
         scroll.performed += Scroll;
         changeTool.performed += ChangeTool;
+        rightFire.performed += ThrowLight;
     }
 
     private void OnDisable()
@@ -86,6 +89,7 @@ public class PlayerController : MonoBehaviour
         interact.performed -= PlayerInputInteract;
         scroll.performed -= Scroll;
         changeTool.performed -= ChangeTool;
+        rightFire.performed -= ThrowLight;
     }
 
 
@@ -239,6 +243,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void ThrowLight(InputAction.CallbackContext context)
+    {
+        lightController.ThrowLight();
+    }
 
 
 }
