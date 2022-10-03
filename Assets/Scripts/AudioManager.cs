@@ -11,16 +11,16 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioClip footStepAudio;
     [SerializeField] AudioClip DrillingAudio;
 
-    [Header("Light Swap Audio")]
+    [Header("Light Swap Audio")] // all of this should be stored on the toolConfig
     [SerializeField] AudioSource swapLightAudioSource; 
     [SerializeField] AudioClip torchSwapAudio;
     [SerializeField] AudioClip lanternSwapAudio;
     [SerializeField] AudioClip flashLightSwapAudio;
 
-    [Header("Tool Audio")]
+    [Header("Tool Audio")] // this should also be stored on the toolconfig
     [SerializeField] AudioSource toolAudioSource;
-    [SerializeField] AudioClip pickAxeAudio;
-    [SerializeField] AudioClip drillAudio; 
+    [SerializeField] List<AudioClip> pickAxeAudioClips;
+    [SerializeField] AudioClip drillAudio;
 
 
     private void Awake()
@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void SwapLight(LightType lightType)
+    public void SwapLight(LightType lightType) // shouldn't of used a switch statement - should just feed in the clip to be played from a list on the tool/light config
     {
         switch (lightType)
         {
@@ -60,21 +60,34 @@ public class AudioManager : MonoBehaviour
 
     public void StopDiggingAudio()
     {
+        if(toolAudioSource.clip == pickAxeAudioClips[0]) { return; } //this only works with one audio clip in the list for the pickaxe - basically this is a massive bodge
         toolAudioSource.Stop();
     }
+
+    int pickaxeAudioIndex = 0;
 
     public void PlayDiggingAudio(ToolType toolType)
     {
         switch (toolType)
         {
             case ToolType.pickAxe:
+                if(toolAudioSource.isPlaying) { return; }
+                toolAudioSource.volume = 1; // TODO this is a magic number
+                toolAudioSource.clip = pickAxeAudioClips[pickaxeAudioIndex];
+                toolAudioSource.Play();
+                pickaxeAudioIndex++;
+
+                if(pickaxeAudioIndex == pickAxeAudioClips.Count)
+                {
+                    pickaxeAudioIndex = 0;
+                }
 
                 break;
 
             case ToolType.drill:
 
                 if(toolAudioSource.clip == drillAudio && toolAudioSource.isPlaying) { return; }
-
+                toolAudioSource.volume = 0.2f; // TODO this is a magic number and just a bit lazy!
                 toolAudioSource.clip = drillAudio;
                 toolAudioSource.Play();
                 break;
@@ -94,7 +107,7 @@ public class AudioManager : MonoBehaviour
         audioSource.loop = false; 
     }
 
-    public void PlayFootStepSound()
+    public void PlayFootStepSound() // not implemented yet
     {
         audioSource.loop = true; 
         audioSource.clip = footStepAudio;
