@@ -7,6 +7,7 @@ using System.Runtime.Remoting.Messaging;
 public class DiggingTool : ScriptableObject
 {
     [Header("Attributes")]
+    public ToolType toolType;
     [Range(0.5f, 20f)]
     public float radius = 1f;
 
@@ -25,6 +26,4 @@ public class DiggingTool : ScriptableObject
     public BrushType brushType;
 
     public ActionType actionType;
-
-    public string animationName; //this is super hacky! Don't do this normally!
 }

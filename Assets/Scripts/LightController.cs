@@ -42,8 +42,7 @@ public class LightController : MonoBehaviour
     public void ScrollThroughDifferentLights(float scrollValue)
     {
         int numberOfLights = lights.Count;
-
-        if(scrollValue > 0)
+        if (scrollValue > 0)
         {
             currentIndex++; 
             if(currentIndex < numberOfLights)
@@ -69,6 +68,7 @@ public class LightController : MonoBehaviour
                 EquipLight(currentIndex);
             }
         }
+        AudioManager.Instance.SwapLight(equippedLight.lightType);
     }
 
     private void EquipLight(int lightIndex)

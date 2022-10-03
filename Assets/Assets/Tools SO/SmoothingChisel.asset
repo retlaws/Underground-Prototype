@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d31e6d45f0e0a741b97f2461fdca965, type: 3}
   m_Name: SmoothingChisel
   m_EditorClassIdentifier: 
+  toolType: 2
   radius: 1.9
   opacity: 0.244
   depth: 0
@@ -19,4 +20,3 @@ MonoBehaviour:
   range: 1.5
   brushType: 0
   actionType: 5
-  animationName: SmoothingChisel

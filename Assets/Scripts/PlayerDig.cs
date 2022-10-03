@@ -43,6 +43,7 @@ public class PlayerDig : MonoBehaviour
     public void OnFireHoldPerformed(InputAction.CallbackContext context)
     {
         StopAllCoroutines();
+        AudioManager.Instance.StopDiggingAudio();
     }
 
     private IEnumerator ContinuousDigging()
@@ -69,10 +70,16 @@ public class PlayerDig : MonoBehaviour
         if(Physics.Raycast(currentTool.startOfDiggingRaycast.position, currentTool.startOfDiggingRaycast.forward, out var hit, currentTool.toolConfig.range))
         {
             diggerMasterRuntime.Modify(hit.point, currentTool.toolConfig.brushType, currentTool.toolConfig.actionType, 2, currentTool.toolConfig.opacity, currentTool.toolConfig.radius); // TODO can insert a texture reference here which will be useful
+            
             if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Pickaxe"))
             {
                 animator.Play("Pickaxe");
             }
+            AudioManager.Instance.PlayDiggingAudio(currentTool.toolConfig.toolType);
+        }
+        else
+        {
+            AudioManager.Instance.StopDiggingAudio();
         }
     }
 
