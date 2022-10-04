@@ -54,11 +54,7 @@ public class LightFlicker : MonoBehaviour
 
     void Update()
     {
-        if(lightObject == null)
-        {
-            maxIntensity = light.intensity;
-        }
-        else
+        if(lightObject != null)
         {
             maxIntensity = lightObject.GetMaxIntensityForLightFlicker();
         }

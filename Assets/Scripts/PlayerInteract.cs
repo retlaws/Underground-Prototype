@@ -27,6 +27,11 @@ public class PlayerInteract : MonoBehaviour
         currentObject = null;
     }
 
+    public void HideInteractText()
+    {
+        interactText.SetActive(false);
+    }
+
 
     private void OnTriggerEnter(Collider other)
     {

@@ -13,13 +13,16 @@ public class LightController : MonoBehaviour
     [SerializeField] List<LightObject> lights;
     [SerializeField] Transform instantiationPoint;
     [SerializeField] Transform headTransform;
-    [SerializeField] int numberOfThrowableLights = 10; 
+    [SerializeField] int numberOfThrowableLights = 10;
+
+    PlayerInteract playerInteract;
 
     private void Start()
     {
         TurnOffAllLights();
         EquipLight(0); // this is just starting the list at the start each time
         UIManager.Instance.updateThrowableLightUI(numberOfThrowableLights);
+        playerInteract = GetComponent<PlayerInteract>();
     }
 
     private void TurnOffAllLights()
@@ -35,6 +38,23 @@ public class LightController : MonoBehaviour
         if(!equippedLight.isRechargable) { return; }
         equippedLight.PowerUpLight(powerUpAmount);
         
+    }
+
+
+
+    public void PickupLightItem(LightObject lightPickup, GameObject pickup)
+    {
+        for (int i = 0; i < lights.Count; i++)
+        {
+            if (lights[i].lightType == lightPickup.lightType)
+            {
+                return;
+            }
+        }
+        lights.Add(lightPickup);
+        playerInteract.MakeCurrentObjectNull();
+        playerInteract.HideInteractText();
+        Destroy(pickup);
     }
 
     int currentIndex = 0;
@@ -68,7 +88,10 @@ public class LightController : MonoBehaviour
                 EquipLight(currentIndex);
             }
         }
-        AudioManager.Instance.SwapLight(equippedLight.lightType);
+        if(lights.Count > 1) // this is a bit of a hack - should really check that the light has power / fuel
+        {
+            AudioManager.Instance.SwapLight(equippedLight.lightType);
+        }
     }
 
     private void EquipLight(int lightIndex)
